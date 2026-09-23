@@ -5,13 +5,13 @@ import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA5lFaJYrxpGOqAGKyaAWtT6axvlTxz--o",
-  authDomain: "jt-boilerpoint.firebaseapp.com",
-  projectId: "jt-boilerpoint",
-  storageBucket: "jt-boilerpoint.firebasestorage.app",
-  messagingSenderId: "671704149856",
-  appId: "1:671704149856:web:5e7dcf3cec4a2704593805",
-  measurementId: "G-Y4QBGPCHRV"
+  apiKey: "AIzaSyAnLk8ZqBSWo608AJ1-_xovUWYQ1dQno5I",
+  authDomain: "jtan-ai-canva.firebaseapp.com",
+  projectId: "jtan-ai-canva",
+  storageBucket: "jtan-ai-canva.firebasestorage.app",
+  messagingSenderId: "714726274213",
+  appId: "1:714726274213:web:d27dd27c5d98e1c42e494c",
+  measurementId: "G-94B6LYZS5F"
 };
 
 // Initialize firebase
