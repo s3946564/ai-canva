@@ -1,4 +1,3 @@
-// @ts-ignore Firebase types are provided by the project dependency at build time.
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -11,8 +10,8 @@ const firebaseConfig = {
   projectId: "jt-boilerpoint",
   storageBucket: "jt-boilerpoint.firebasestorage.app",
   messagingSenderId: "671704149856",
-  appId: "1:671704149856:web:35cc2e2d569569c2593805",
-  measurementId: "G-R5N4CMY0X1"
+  appId: "1:671704149856:web:5e7dcf3cec4a2704593805",
+  measurementId: "G-Y4QBGPCHRV"
 };
 
 // Initialize firebase
