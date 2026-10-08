@@ -73,6 +73,10 @@ has changed." If you change a model, **update the table and append to the change
 
 ## Change log
 
+- **2026-10-08** — Gotcha: the default `deepseek-v4.1-flash` is **not in Ollama's free plan** — a
+  free-tier API key gets HTTP 402 "This model is not in the Free plan." Free users must override
+  `OLLAMA_MODEL` in `server/.env` (verified working with `gemma4:31b`, the model Ollama's own cloud
+  docs use as their example).
 - **2026-02-08** — Default text model changed `deepseek-v4-flash` → **`deepseek-v4.1-flash`**
   (hardcoded default in both `server/src/ollama.ts` and `functions/src/ollama.ts`; env templates
   and docs updated to match). **Deployed to `carbondocs` the same day — verified live:**

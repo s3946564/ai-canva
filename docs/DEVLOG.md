@@ -29,6 +29,22 @@ current state).
 
 ---
 
+## 2026-10-08 — First live run: default model is paid; free tier needs `OLLAMA_MODEL`
+
+- **Done:** Student ran the `gamedoc` box end-to-end for the first time (Idea → Game Design Doc →
+  Run against Ollama Cloud) — works. Two durable gotchas surfaced and fixed: (1) the default
+  `OLLAMA_MODEL` `deepseek-v4.1-flash` is **not in Ollama's free plan** — a free key returns HTTP
+  402 "This model is not in the Free plan"; setting `OLLAMA_MODEL=gemma4:31b` in `server/.env`
+  fixes it. (2) Google sign-in was refused in the student's browser (cause unconfirmed — likely
+  `auth/unauthorized-domain` from a non-`localhost` origin); the dev-only fake-user hook
+  `window.__dsh.useAuthStore.setState({ user: {...}, loading: false })` (same one `e2e.mjs` Part 1
+  uses) got them onto the board, and the "Missing or insufficient permissions" Firestore error that
+  follows is expected noise — it never blocks a Run (Run calls the local `/api/generate`, not
+  Firestore).
+- **In flight:** —
+- **Next steps:** Gather Experiment A/B evidence (Run with vs without the doc; count missing
+  sections over repeats), then the report.
+
 ## 2026-10-08 — Game Design Doc box (🎮 `gamedoc`) added (student capstone box)
 
 - **Done:** Registered a new `worker` box `gamedoc` (Game Design Doc) — `BoxType` union +
