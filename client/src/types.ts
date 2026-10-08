@@ -1,4 +1,4 @@
-export type BoxType = "agent" | "chatbot" | "idea" | "research" | "summarize" | "image" | "documents" | "cartoon" | "slides" | "code" | "codeedit" | "prd" | "devplan" | "codemap" | "ui" | "stitch" | "note" | "label" | "timer" | "checklist" | "custom" | "sdlc-intent" | "sdlc-spec" | "sdlc-plan" | "sdlc-implement" | "sdlc-review" | "sdlc-merge";
+export type BoxType = "agent" | "chatbot" | "idea" | "research" | "summarize" | "image" | "documents" | "cartoon" | "slides" | "code" | "codeedit" | "prd" | "devplan" | "codemap" | "ui" | "stitch" | "note" | "label" | "timer" | "checklist" | "gamedoc" | "custom" | "sdlc-intent" | "sdlc-spec" | "sdlc-plan" | "sdlc-implement" | "sdlc-review" | "sdlc-merge";
 
 /**
  * One task in a Checklist box — the team's shared to-do list. Every field is
@@ -1029,6 +1029,41 @@ export const BOX_TYPES: Record<BoxType, BoxTypeMeta> = {
     defaultSystemPrompt: "",
     defaultWidth: 320,
     defaultHeight: 340,
+  },
+  gamedoc: {
+    label: "Game Design Doc",
+    icon: "🎮",
+    color: "#84cc16",
+    description:
+      "Turn a game concept into a structured design document — core loop, mechanics, progression, scope and risks.",
+    hasAI: true,
+    category: "worker",
+    roles: ["everyone"],
+    defaultPrompt: `Turn the game concept below into a concise game design document in Markdown.
+
+Use EXACTLY these section headings, in this order:
+## Concept
+## Core Loop
+## Mechanics
+## Progression
+## Art & Audio Direction
+## Scope & Risks
+## MVP
+
+Rules:
+- Be specific and buildable: name real numbers (durations, counts, costs) instead of "many" or "some".
+- Under "Core Loop", describe one full cycle the player repeats, and say what makes them repeat it.
+- Under "Scope & Risks", be honest about what is hard, expensive, or likely to be cut.
+- If the concept is too vague to fill a section, write "UNKNOWN — needs a decision:" and name the decision the designer must make.
+- Do not invent a story, characters or monetisation the concept does not mention.
+- Keep the whole document under 700 words.
+
+Game concept:
+{{inputs}}`,
+    defaultSystemPrompt:
+      "You are a senior game designer writing an internal design document for a small team. You are concrete, buildable and honest about risk. You prefer specific numbers and clear scope limits over hype or marketing language. You never invent features the concept does not imply; when something is undecided you say so plainly.",
+    defaultWidth: 360,
+    defaultHeight: 420,
   },
   custom: {
     label: "Custom",

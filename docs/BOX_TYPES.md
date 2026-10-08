@@ -180,6 +180,28 @@ key functions, and a build order. Best fed by a PRD box, then fed into a Code bo
 - **Inputs:** typically a PRD; defaults to `{{inputs}}`.
 - **Output:** Markdown list.
 
+### 🎮 Game Design Doc — `gamedoc`
+
+Turns a game concept into a structured design document with a stable, predictable shape. The
+sections are `Concept`, `Core Loop`, `Mechanics`, `Progression`, `Art & Audio Direction`,
+`Scope & Risks`, and `MVP`. Designed to sit **before** a Code box: the document is the
+specification the code is built from.
+
+- **AI:** Ollama (text).
+- **Inputs:** a game concept — an Idea box, a Documents box, pasted notes — via `{{inputs}}`.
+- **Output:** Markdown document (downloadable via 💾 Save). **The app checks the shape itself**
+  rather than trusting the model's self-report: `checkDesignDocSections` in
+  `client/src/lib/gamedoc.ts` reads the headings out of the reply (tolerating "and" for "&", extra
+  words in a heading, and bold-only headings), and `annotateDesignDoc` appends a visible
+  "Incomplete design document" note naming whatever the model skipped, so a half-finished document
+  cannot travel downstream looking finished. A complete document is stored byte-for-byte unchanged.
+- **Prompt rules worth defending:** fixed headings (so the output is machine-followable by a Code
+  box), "name real numbers" (against plausible-but-unbuildable filler), and an explicit
+  `UNKNOWN — needs a decision:` escape hatch so the model admits ignorance instead of inventing a
+  story, characters, or monetisation the concept never implied.
+- **Not in `AGENT_CREATABLE_TYPES`** by default — enabling it would let an Agent box author its own
+  specifications, which is the same reasoning the SDLC stages are excluded under.
+
 ### 🔭 Code Map — `codemap`
 
 Reads a **GitHub repository** and writes an orientation brief: what the code does, how it is

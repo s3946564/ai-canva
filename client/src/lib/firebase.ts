@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -16,7 +15,6 @@ const firebaseConfig = {
 
 // Initialize firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 // Use localStorage for Auth persistence instead of the default IndexedDB.
 // This avoids conflicts between Auth's IndexedDB and Firestore's IndexedDB cache.

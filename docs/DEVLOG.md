@@ -29,6 +29,56 @@ current state).
 
 ---
 
+## 2026-10-08 — Game Design Doc box (🎮 `gamedoc`) added (student capstone box)
+
+- **Done:** Registered a new `worker` box `gamedoc` (Game Design Doc) — `BoxType` union +
+  `BOX_TYPES` entry in `client/src/types.ts` (fixed section headings, "name real numbers" rule,
+  `UNKNOWN — needs a decision:` escape hatch). `runBox` gained a `gamedoc` branch that checks the
+  reply's *shape* with the new pure helper `client/src/lib/gamedoc.ts`
+  (`checkDesignDocSections` / `annotateDesignDoc`, unit tests in `gamedoc.test.ts`) and appends a
+  visible "Incomplete design document" note naming any skipped section, so a half-finished document
+  cannot travel downstream looking finished (complete documents are stored unchanged). Docs updated:
+  `BOX_TYPES.md` (+ Game Design Doc), `AGENTS.md` (box list 26 → 27). Also added `MY_CAPSTONE.md`
+  (the student's step-by-step plan, evidence experiments, report outline) and **verified 5 citable
+  sources by live fetch** — METR's early-2025 RCT *and* its Feb 2026 update, Peng et al. (Copilot),
+  Spracklen et al. (package hallucinations), Stack Overflow 2025. Note: `web_search` has no API key
+  in this session but **`web_fetch` works**, so sources can be verified by URL even when search
+  cannot run.
+- **In flight:** `client/.tscheck/` — a temporary verification harness that **must be deleted**
+  (child processes cannot write in the DSH sandbox, so neither `tsc` nor `rm` could remove it;
+  run `Remove-Item -Recurse -Force client\.tscheck` in a normal shell). The box's research framing
+  is unresolved: the brief's own question for this box is "Can an LLM reason about fun?", but the
+  student was assigned "How AI coding can help make coding better"; the proposed bridge is to test
+  whether the generated document improves a downstream Code box. Awaiting instructor confirmation.
+- **Next steps:** **Paste a real `OLLAMA_API_KEY` into `server/.env`** — it is present but EMPTY, so
+  the `gamedoc` box has never run against a real model and its demo + evidence experiments are
+  blocked on that (all of its logic is verified offline instead: 17 Node type-stripping checks
+  against the real sources — the shape checker, the prompt↔checker contract, and the pipeline
+  composition with Idea upstream and Summarize downstream, including that the ⚠️ incomplete-document
+  warning reaches the next box). Then delete `client/.tscheck/`; run `npm test` in a normal shell (vitest
+  **cannot** run under the DSH sandbox: esbuild's piped spawn fails with `spawn EPERM`, and child
+  processes cannot write into the workspace, so `tsc -b` fails on its `.tsbuildinfo` while
+  `tsc -p tsconfig.json` passes). Optional one-liner: add `gamedoc` to `AGENT_CREATABLE_TYPES`
+  (deliberately left out).
+
+## 2026-10-06 — Local dev run on Windows: two blocking client bugs fixed
+
+- **Done:** Got `npm run dev` running (server on :3001, client on :5173). Two bugs stopped the
+  client from starting at all: (1) `client/vite.config.ts`'s port-wait loop called
+  `execSync("sleep 0.1")`, which throws on Windows — `execSync` goes through `cmd.exe`, which has
+  no `sleep` — so Vite's config load aborted; replaced with a portable synchronous
+  `sleepSync()` built on `Atomics.wait` (no child process). (2) `client/src/lib/firebase.ts` had an
+  uncommitted edit that declared `db` **twice** and imported the non-existent `firebase/config`;
+  dropped the bogus import and the duplicate declaration (the `export const db` at the bottom is
+  the real one), which also removes the now-unused `analytics`. Both `tsc -b` (client) and
+  `tsc --noEmit` (server) pass; the landing page renders in headless Chrome with 0 page errors
+  (only the expected favicon 404).
+- **In flight:** `server/.env` (new, gitignored) has an **empty** `OLLAMA_API_KEY`, so the board UI
+  works but every AI box fails at runtime. The dev servers are running in this session only.
+- **Next steps:** Paste a real `OLLAMA_API_KEY` into `server/.env` and restart the server. Before
+  deploying, reconcile the project mismatch: `.firebaserc` defaults to **`carbondocs`** while
+  `client/src/lib/firebase.ts` hardcodes project **`jtan-ai-canva`**.
+
 ## 2026-02-08 — Checklist box: a shared team to-do list on the board
 
 - **Done:** New **Checklist** collaboration box (✅ `checklist`, palette "Collaboration", `roles:

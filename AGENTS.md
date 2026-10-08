@@ -79,8 +79,9 @@ npm run deploy         # = bash scripts/deploy.sh (production Firebase deploy)
   `boardStore.ts` imports these rather than inlining them.
 - **Prompt templating** references connected inputs by name: `{{Box Name}}`, `{{input_1}}`,
   `{{inputs}}`.
-- **26 built-in box types** plus user-created custom boxes: Agent, Chatbot, Idea, Image,
-  Documents, Research, Summarize, PRD, Dev Plan, **Code Map**, **Code Edit**, Cartoon Profile,
+- **27 built-in box types** plus user-created custom boxes: Agent, Chatbot, Idea, Image,
+  Documents, Research, Summarize, PRD, Dev Plan, **Game Design Doc**, **Code Map**, **Code Edit**,
+  Cartoon Profile,
   Slides, Code, UI Design,
   Stitch UI, four collaboration boxes (Note, Label, Timer, **Checklist**), the six **SDLC pipeline
   stages** (Intent, Spec, Plan, Implementation, Review, Merge), and the `custom` runtime type (see
@@ -185,6 +186,15 @@ The app reports per-call LLM token usage and tracks cumulative usage per user an
 - **Client tests** (`client/src/lib/*.test.ts`): pure functions only (prompts, code, slides,
   serialization) — no DOM, no Firebase. `client/vitest.config.ts` (node env) loads instead of
   `vite.config.ts` to avoid the dev-server proxy + build chunks.
+- **Running tests inside the DSH sandbox (agent sessions):** `npm test` / `npx vitest` **cannot
+  run** — Vitest loads its config through esbuild, which spawns a helper over piped stdio, and the
+  sandbox denies that (`spawn EPERM`). Child processes also **cannot write into the workspace**, so
+  `tsc -b` fails with EPERM on `tsconfig.tsbuildinfo`, and a temp directory created for a check
+  cannot be removed by a command (no `rm`/`Remove-Item`) — only the agent's file tools write. What
+  does work: `npx tsc -p tsconfig.json` (typecheck — `noEmit` is already set in the config) and
+  Node's built-in TypeScript support, `node <harness>.mts` importing `../src/lib/<x>.ts` (Node 26
+  strips types and writes nothing). Use that for pure-helper verification, and keep the real
+  assertions in the `*.test.ts` for the user to run in a normal shell.
 - **No functions/ tests yet** — they need the Firebase emulator / Admin SDK; keep API logic in sync
   between `server` and `functions` by hand and cover the shared logic via `server` tests.
 - **E2E suite:** `client/e2e.mjs` (playwright-core + system Chrome) drives the **real dev app** on

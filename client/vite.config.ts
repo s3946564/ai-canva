@@ -2,7 +2,16 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+
+/**
+ * Block synchronously without spawning a process. `execSync("sleep 0.1")` only
+ * worked where a Unix `sleep` binary is on PATH; on plain Windows execSync goes
+ * through cmd.exe (no `sleep`), so it threw during Vite's config load and
+ * `npm run dev` could not start at all.
+ */
+function sleepSync(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
 
 /**
  * Reads the server port from .server-port file.
@@ -20,7 +29,7 @@ function getServerPort(): number {
         if (!isNaN(port) && port > 0) return port;
       }
     } catch {}
-    execSync("sleep 0.1");
+    sleepSync(100);
   }
   console.warn(`[vite] Could not detect server port — falling back to ${fallbackPort}`);
   return fallbackPort;

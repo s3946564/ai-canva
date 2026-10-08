@@ -67,6 +67,7 @@ import {
   validateDeploySet,
 } from "../lib/deploy.js";
 import { parseSlidesResponse } from "../lib/slides.js";
+import { annotateDesignDoc, checkDesignDocSections } from "../lib/gamedoc.js";
 import { cleanBoxDataForFirestore } from "../lib/serialization.js";
 import { DEFAULT_TIMER_MS } from "../lib/timer.js";
 import type { CustomBoxDef } from "../lib/customBoxes.js";
@@ -1443,7 +1444,18 @@ export const useBoardStore = create<BoardState>()(
               boxType,
             });
 
-            if (boxType === "slides") {
+            if (boxType === "gamedoc") {
+              // A design document is only useful downstream if it has a stable
+              // shape (the Code box reads these sections). The app checks the
+              // shape rather than trusting the model's self-report, and marks an
+              // incomplete document so it cannot travel downstream looking done.
+              const check = checkDesignDocSections(result.content);
+              get().updateBoxData(id, {
+                output: annotateDesignDoc(result.content, check),
+                status: "done",
+                error: undefined,
+              });
+            } else if (boxType === "slides") {
               // Parse the LLM's JSON output into a slide deck
               const slides = parseSlidesResponse(result.content);
               get().updateBoxData(id, {
